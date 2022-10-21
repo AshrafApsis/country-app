@@ -1,0 +1,22 @@
+.nav {
+  background-color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .2);
+
+}
+
+.navleft {
+  font-size: 18px;
+  font-weight: 700;
+  padding-left: 40px;
+  
+}
+
+.navright {
+  font-size: 14px;
+  font-weight: 500;
+  padding-right: 30px;
+  
+}
