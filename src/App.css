@@ -9,7 +9,9 @@
     --detailpagefont:16px;
   }
 
-
+*{
+  transition: 0.5s ease-in-out !important;
+}
   @font-face {
     font-family: 'NunitoSans';
     src: local('NunitoSans'), url(../src/fonts/NunitoSans-Regular.ttf) format('opentype');

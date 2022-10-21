@@ -1,6 +1,15 @@
 import classes from "./Search.module.css";
 
-const Search = () => {
+type SearchProps = {
+  selectRegion: (region: string) => void;
+}
+
+
+const Search: React.FC<SearchProps> = ({selectRegion}: SearchProps) => {
+  
+  
+  let region: string[] = ["Africa", "Americas", "Asia", "Europe", "Oceania"];
+
   return (
     <>
       <section className={classes.searchmenu}>
@@ -8,11 +17,11 @@ const Search = () => {
           <input placeholder="Search a country..." />
         </section>
         <section>
-          <select name="cars" id="cars">
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>
+          <select  onChange={(e) => selectRegion(e.target.value)}>
+          <option disabled selected > Regions </option>
+            {region.map((e) => (
+              <option value={e} key={e}>{e}</option>
+            ))}
           </select>
         </section>
       </section>
