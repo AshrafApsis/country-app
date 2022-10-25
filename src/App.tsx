@@ -9,21 +9,39 @@ import Container from "./core/Container";
 
 function App() {
   const [selectedRegion, setSelectedRegion] = useState<string>("");
+  const [searchCountry, setsearchCountry] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
- 
 
 
-  useEffect(()=>{
+  useEffect(() => {
     getCountrieList();
-  },[]);
+  }, []);
 
   const [countriesList, setCountrieList] = useState<any[]>([]);
 
   const onHandleRegion = (region: string) => {
     // 👇️ take parameter passed from Child component
     setSelectedRegion(region);
-    console.log(region);
-    getCountriesByRegion(region);
+    console.log("selectedRegion", selectedRegion);
+    setTimeout(() => {
+      getCountriesByRegion(region);
+    }, 500);
+  };
+
+  const onSearchCountry = (userInput: string) => {
+    // 👇️ take parameter passed from Child component
+    setsearchCountry(userInput.toLowerCase());
+    if (
+      typeof userInput === "string" &&
+      userInput.trim() !== "" &&
+      userInput.length !== 0
+    ) {
+      setTimeout(() => searchByCountryName(userInput), 500);
+      console.log("searchCountry", searchCountry);
+    } else {
+      getCountrieList();
+    }
   };
 
   const getCountriesByRegion = async (region: string) => {
@@ -47,30 +65,87 @@ function App() {
     }
   };
 
+  //
 
+  const getCountrieList = async () => {
+    try {
+       setIsLoading(true); 
 
-  const getCountrieList =  async () => {
-   try {
-	 let response =  await fetch("https://restcountries.com/v3.1/all",{method:"GET",  headers: {
-	       'Content-Type': 'application/json'
-	 
-	     },}).then((value)=>{
-	       return value.json();
-	     });
-	 
-	     setCountrieList(response);
-} catch (error) {
-	console.log(error);
-}
-    
-  }
+      let response = await fetch("https://restcountries.com/v3.1/all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((value) => {
+        console.log(value.status);
+       
+          return value.json();
+       
+      });
+      
+      if (response !== null || response !== undefined) {
+        if(response?.message !== undefined &&  response?.message !== ''){
+          return;  
+        }
+        setCountrieList(response);
+      }
+      setIsLoading(false); 
+    } catch (error) {
+      setIsLoading(false); 
+      console.log(error);
+    }
+  };
+
+  const searchByCountryName = async (userInput: string) => {
+    try {
+      let response = await fetch(
+        `https://restcountries.com/v2/name/${userInput}?fullText=false`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((value) => {
+        console.log(value.status);
+        if (value.status === 200) {
+          return value.json();
+        } else if (value.status >= 400 && value.status <= 499) {
+          value.json().then((value) => {
+            throw new Error(`${value.message}`);
+          }).catch((e)=>{
+            console.log(e.message);
+          });
+        } else if (value.status >= 500 && value.status <= 599) {
+          value.json().then((value) => {
+            throw new Error(`${value.message}`);
+          }).catch((e)=>{
+            console.log(e.message);
+          });
+        }
+      });
+
+      // console.log(`ERROR ${response}`);
+
+      if (response !== null || response !== undefined) {
+        setCountrieList(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
       <Header></Header>
       <Container>
-        <Search selectRegion={onHandleRegion}></Search>
-        <CountriesList countryArray={countriesList}></CountriesList>
+        <Search
+          selectRegion={onHandleRegion}
+          searchCountry={onSearchCountry}
+        ></Search>
+       {
+        isLoading === true ? <p>Loading ....</p>  :  <CountriesList countryArray={countriesList}></CountriesList>
+       }
       </Container>
     </>
   );
