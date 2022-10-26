@@ -22,7 +22,18 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.8em;
+    margin-bottom: 32px;
 }
+
+@media screen and (max-width:450px){
+    .country-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+    }
+}
+
 
 .country-details {
     padding: 16px;

@@ -9,7 +9,7 @@ type SearchProps = {
 const Search: React.FC<SearchProps> = ({selectRegion,searchCountry}: SearchProps) => {
   
   
-  let region: string[] = ["Africa", "Americas", "Asia", "Europe", "Oceania"];
+  let region: string[] = ["All Regions" ,"Africa", "Americas", "Asia", "Europe", "Oceania"];
 
 
   const searchCountryByName = (text:string) =>{
@@ -25,7 +25,7 @@ const Search: React.FC<SearchProps> = ({selectRegion,searchCountry}: SearchProps
         </section>
         <section>
           <select  onChange={(e) => selectRegion(e.target.value)}>
-          <option disabled selected> Regions </option>
+          {/* <option disabled selected> Regions </option> */}
             {region.map((e) => (
               <option value={e} key={e}>{e}</option>
             ))}

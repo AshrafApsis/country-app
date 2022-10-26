@@ -12,7 +12,7 @@ const Header : React.FC = ()=>{
                <div className={classes.navleft}>Where in the world?</div>
                 <div className={classes.navright}>
                 <FontAwesomeIcon  size="xl" icon={faMoon}  />
-                 <span style={{padding:'12px'}}>Dark Mode</span>
+                 {/* <span style={{padding:'12px'}}>Dark Mode</span> */}
                   </div>
                </nav>
             </>

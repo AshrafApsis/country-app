@@ -13,7 +13,7 @@ const CountriesDetails = ({ country }: { country:any }) => {
         </div>
         <div className={classes["country-details"]}>
           <div className={classes["country-name"]}>
-            <p>{country.name.official}</p>
+            <p>{country.name.common}</p>
           </div>
           <div>
             <span>Population:</span>

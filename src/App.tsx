@@ -24,9 +24,11 @@ function App() {
     // 👇️ take parameter passed from Child component
     setSelectedRegion(region);
     console.log("selectedRegion", selectedRegion);
-    setTimeout(() => {
+    if(region.toLowerCase().includes("all")){
+      getCountrieList();
+    }else{
       getCountriesByRegion(region);
-    }, 500);
+    }
   };
 
   const onSearchCountry = (userInput: string) => {
@@ -37,7 +39,7 @@ function App() {
       userInput.trim() !== "" &&
       userInput.length !== 0
     ) {
-      setTimeout(() => searchByCountryName(userInput), 500);
+      setTimeout(() => searchByCountryName(userInput),500);
       console.log("searchCountry", searchCountry);
     } else {
       getCountrieList();
@@ -59,6 +61,7 @@ function App() {
       });
 
       console.log(response);
+      
       setCountrieList(response);
     } catch (error) {
       console.log(error);
@@ -99,7 +102,7 @@ function App() {
   const searchByCountryName = async (userInput: string) => {
     try {
       let response = await fetch(
-        `https://restcountries.com/v2/name/${userInput}?fullText=false`,
+        `https://restcountries.com/v3.1/name/${userInput}?fullText=true`,
         {
           method: "GET",
           headers: {
@@ -128,6 +131,7 @@ function App() {
       // console.log(`ERROR ${response}`);
 
       if (response !== null || response !== undefined) {
+        console.log(response);
         setCountrieList(response);
       }
     } catch (error) {

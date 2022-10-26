@@ -19,3 +19,22 @@
   padding-right: 30px;
   
 }
+
+
+@media screen  and (max-width:450px){
+  .navleft {
+    font-size: 18px;
+    font-weight: 700;
+    /* padding-left: 40px; */
+    padding: 0;
+    
+  }
+  
+  .navright {
+    font-size: 14px;
+    font-weight: 500;
+    /* padding-right: 30px; */
+    padding: 0;
+  }
+  
+}
