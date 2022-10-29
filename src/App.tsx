@@ -1,5 +1,8 @@
+import { ThemeProvider, createTheme } from "@mui/material";
+
 import { useEffect, useState } from "react";
 import "./App.css";
+import DataGridDemo, { CountryProps } from "./components/Country/CountriesGrid";
 
 import CountriesList from "./components/Country/CountriesList";
 
@@ -7,26 +10,31 @@ import Header from "./components/Header/header.component";
 import Search from "./components/Search/Search";
 import Container from "./core/Container";
 
+const theme = createTheme({
+  typography: {
+    fontSize: 14,
+    fontFamily: ["NunitoSans"].join(","),
+  },
+});
+
 function App() {
   const [selectedRegion, setSelectedRegion] = useState<string>("");
   const [searchCountry, setsearchCountry] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-
-
   useEffect(() => {
     getCountrieList();
   }, []);
 
-  const [countriesList, setCountrieList] = useState<any[]>([]);
+  const [countriesList, setCountrieList] = useState<CountryProps[]>([]);
 
   const onHandleRegion = (region: string) => {
     // 👇️ take parameter passed from Child component
     setSelectedRegion(region);
     console.log("selectedRegion", selectedRegion);
-    if(region.toLowerCase().includes("all")){
+    if (region.toLowerCase().includes("all")) {
       getCountrieList();
-    }else{
+    } else {
       getCountriesByRegion(region);
     }
   };
@@ -39,7 +47,7 @@ function App() {
       userInput.trim() !== "" &&
       userInput.length !== 0
     ) {
-      setTimeout(() => searchByCountryName(userInput),500);
+      setTimeout(() => searchByCountryName(userInput), 500);
       console.log("searchCountry", searchCountry);
     } else {
       getCountrieList();
@@ -61,7 +69,7 @@ function App() {
       });
 
       console.log(response);
-      
+
       setCountrieList(response);
     } catch (error) {
       console.log(error);
@@ -72,7 +80,7 @@ function App() {
 
   const getCountrieList = async () => {
     try {
-       setIsLoading(true); 
+      setIsLoading(true);
 
       let response = await fetch("https://restcountries.com/v3.1/all", {
         method: "GET",
@@ -81,20 +89,34 @@ function App() {
         },
       }).then((value) => {
         console.log(value.status);
-       
-          return value.json();
-       
+
+        return value.json();
       });
-      
+
+    
+
       if (response !== null || response !== undefined) {
-        if(response?.message !== undefined &&  response?.message !== ''){
-          return;  
+        if (response?.message !== undefined && response?.message !== "") {
+          return;
         }
-        setCountrieList(response);
+
+        const list: CountryProps[] = response.map((i: any, index: number) => {
+          return {
+            id: index + 1,
+            population: i.population,
+            flag: i.flag,
+            country: i.name.common,
+            region: i.region,
+            capital: i.capital,
+          };
+        });
+
+     
+        setCountrieList(list);
       }
-      setIsLoading(false); 
+      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false); 
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -114,17 +136,23 @@ function App() {
         if (value.status === 200) {
           return value.json();
         } else if (value.status >= 400 && value.status <= 499) {
-          value.json().then((value) => {
-            throw new Error(`${value.message}`);
-          }).catch((e)=>{
-            console.log(e.message);
-          });
+          value
+            .json()
+            .then((value) => {
+              throw new Error(`${value.message}`);
+            })
+            .catch((e) => {
+              console.log(e.message);
+            });
         } else if (value.status >= 500 && value.status <= 599) {
-          value.json().then((value) => {
-            throw new Error(`${value.message}`);
-          }).catch((e)=>{
-            console.log(e.message);
-          });
+          value
+            .json()
+            .then((value) => {
+              throw new Error(`${value.message}`);
+            })
+            .catch((e) => {
+              console.log(e.message);
+            });
         }
       });
 
@@ -140,18 +168,18 @@ function App() {
   };
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Header></Header>
+
       <Container>
         <Search
           selectRegion={onHandleRegion}
           searchCountry={onSearchCountry}
         ></Search>
-       {
-        isLoading === true ? <p>Loading ....</p>  :  <CountriesList countryArray={countriesList}></CountriesList>
-       }
+       
+        <DataGridDemo countryList={countriesList}></DataGridDemo>
       </Container>
-    </>
+    </ThemeProvider>
   );
 }
 

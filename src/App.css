@@ -10,7 +10,7 @@
   }
 
 *{
-  transition: 0.5s ease-in-out !important;
+  transition: 0.5s cubic-bezier(0, 0.76, 0.2, 1.67) !important;
 }
   @font-face {
     font-family: 'NunitoSans';
